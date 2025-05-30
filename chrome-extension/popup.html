@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Udemy URL Validator</title>
+    <style>
+        body {
+            width: 300px;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .result.success {
+            background-color: #d4edda;
+            color: #155724;
+            display: block;
+        }
+
+        .result.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Map My Udemy</h2>
+        <button id="checkButton">Generate Mind Map</button>
+        <button id="screenshotButton" disabled hidden>Take Screenshot</button>
+        <div id="result" class="result"></div>
+    </div>
+    <script src="popup.js"></script>
+</body>
+
+</html>
