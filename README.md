@@ -49,3 +49,5 @@ npm run dev
 
 5. Setup chrome Extension
    Browser -> Extensions -> Manage Extension -> Enable 'Developer mode' -> Load unpacked -> Select chrome-extension folder present in map-my-udemy/ -> Use the extension
+
+6. Make sure that your node server is running on `http://localhost:3000`. If there is any change in the port then change the `config.json` file present in chrome-extension/ accordingly
