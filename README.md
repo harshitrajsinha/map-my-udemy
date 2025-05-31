@@ -25,4 +25,6 @@ git clone https://github.com/harshitrajsinha/map-my-udemy.git
 ```
 
 2. Setup chrome Extension
-   Browser -> Extensions -> Manage Extension -> Enable 'Developer mode' -> Load unpacked -> Select chrome-extension folder present in map-my-udemy/ -> Use the extension
+   Browser -> Extensions -> Manage Extension -> Enable 'Developer mode' -> Load unpacked -> Select map-my-udemy folder -> Use the extension
+
+3. Go to your starred udemy course like `https://www.udemy.com/course/docker-and-kubernetes-for-beginners-devops-journey` and generate mind map for it
