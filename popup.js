@@ -1,8 +1,17 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const checkButton = document.getElementById("checkButton");
-  const screenshotButton = document.getElementById("screenshotButton");
+  const generateMindMapBtn = document.getElementById("generate");
   const resultDiv = document.getElementById("result");
-  let mindMapGenerated = false;
+
+  // Helper function to generate random alphanumeric ID
+  function generateRandomId() {
+    const chars =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let id = "";
+    for (let i = 0; i < 4; i++) {
+      id += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return id;
+  }
 
   // Function to get course information from the page
   async function getCourseInfo() {
@@ -130,8 +139,51 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  // Convert course data to jsMind format
+  function convertToJsMindFormat(courseData) {
+    const rootId = "root";
+
+    // Convert sections to jsMind format with index numbers
+    const children = courseData["section-content"].map(
+      (section, sectionIndex) => {
+        const sectionId = generateRandomId();
+        const sectionNumber = sectionIndex + 1;
+        const sectionHeading = `${sectionNumber}. ${section["section-heading"]}`;
+
+        return {
+          id: sectionId,
+          topic: sectionHeading,
+          expanded: true,
+          direction: "right",
+          children: section["section-items"].map((item, itemIndex) => {
+            const itemNumber = itemIndex + 1;
+            return {
+              id: generateRandomId(),
+              topic: `${sectionNumber}.${itemNumber}. ${item}`,
+              expanded: true,
+            };
+          }),
+        };
+      }
+    );
+
+    return {
+      meta: {
+        author: "map-my-udemy",
+        version: "0.1",
+      },
+      format: "node_tree",
+      data: {
+        id: rootId,
+        topic: courseData.course,
+        expanded: true,
+        children,
+      },
+    };
+  }
+
   // Handle Generate Mind Map button
-  checkButton.addEventListener("click", async function () {
+  generateMindMapBtn.addEventListener("click", async function () {
     // Get the current active tab
     const [tab] = await chrome.tabs.query({
       active: true,
@@ -147,14 +199,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     try {
-      // Fetch server URL from config.json
-      let configResponse = await fetch(chrome.runtime.getURL("config.json"));
-      if (!configResponse.ok) {
-        throw new Error("Failed to load configuration");
-      }
-      const config = await configResponse.json();
-      const serverUrl = config.SERVER_URL;
-
       // First check if it's a Udemy course URL
       const parsedUrl = new URL(tab.url);
       if (
@@ -175,48 +219,36 @@ document.addEventListener("DOMContentLoaded", function () {
       });
 
       if (result?.result) {
-        const { course, instructor } = result.result;
-        // Store the course info
-        storeCourseInfo(result.result);
+        const {
+          course,
+          instructor,
+          "section-content": sections,
+        } = result.result;
 
-        // Send data to server
-        fetch(`${serverUrl}/courses`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(result.result),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log("Course data sent to server:", data);
-            if (data.success) {
-              showResult("Mind map generated successfully!", "success");
-              setTimeout(() => {
-                showResult("");
-              }, 2000);
-              mindMapGenerated = true;
-              screenshotButton.disabled = false;
-              screenshotButton.onclick = () => {
-                // Open screenshot page with course data
-                chrome.tabs.create({
-                  url: data.screenshotUrl,
-                });
-              };
-            } else {
-              showResult("Failed to generate mind map", "error");
-              setTimeout(() => {
-                showResult("");
-              }, 2000);
-            }
-          })
-          .catch((error) => {
-            console.error("Error sending course data to server:", error);
-            showResult("Failed to generate mind map", "error");
-            setTimeout(() => {
-              showResult("");
-            }, 2000);
-          });
+        if (!course || !instructor || !sections) {
+          console.log(
+            `Error: Missing required fields: course || instructor || sections`
+          );
+        }
+
+        // Create course data object
+        const courseData = {
+          course,
+          instructor,
+          "section-content": sections,
+        };
+
+        // Convert to jsMind format
+        const jsMindData = convertToJsMindFormat(courseData);
+
+        localStorage.setItem("udemy-course-map", JSON.stringify(jsMindData));
+
+        showResult("Mind map generated successfully!", "success");
+        setTimeout(() => {
+          showResult("");
+        }, 2000);
+
+        window.open("/screenshot.html", "_blank");
       } else {
         showResult("Course not found", "error");
         setTimeout(() => {

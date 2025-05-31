@@ -24,30 +24,5 @@ Map My Udemy is a chrome extension that lets one generate mind map of a particul
 git clone https://github.com/harshitrajsinha/map-my-udemy.git
 ```
 
-2. Create .env file in map-my-udemy directory and configure variables:
-
-```bash
-cd map-my-udemy
-
-mkdir .env
-
-PORT=3000
-BACKEND_SERVER=http://localhost
-```
-
-3. Install necessary files
-
-```bash
-npm install
-```
-
-4. Install necessary files
-
-```bash
-npm run dev
-```
-
-5. Setup chrome Extension
+2. Setup chrome Extension
    Browser -> Extensions -> Manage Extension -> Enable 'Developer mode' -> Load unpacked -> Select chrome-extension folder present in map-my-udemy/ -> Use the extension
-
-6. Make sure that your node server is running on `http://localhost:3000`. If there is any change in the port then change the `config.json` file present in chrome-extension/ accordingly
