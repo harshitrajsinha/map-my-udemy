@@ -26,7 +26,7 @@ function initMindMap() {
     },
   };
 
-  const courseMap = JSON.parse(localStorage.getItem("udemy-course-map"));
+  const courseMap = JSON.parse(sessionStorage.getItem("udemy-course-map"));
   var jm = new jsMind(options);
   jm.init();
   jm.show(courseMap);

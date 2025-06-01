@@ -241,7 +241,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Convert to jsMind format
         const jsMindData = convertToJsMindFormat(courseData);
 
-        localStorage.setItem("udemy-course-map", JSON.stringify(jsMindData));
+        sessionStorage.setItem("udemy-course-map", JSON.stringify(jsMindData));
 
         showResult("Mind map generated successfully!", "success");
         setTimeout(() => {
